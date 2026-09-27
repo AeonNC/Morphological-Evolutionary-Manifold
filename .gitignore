@@ -1,0 +1,12 @@
+# Data-heavy paths and large artifacts
+data/
+outputs/
+.ipynb_checkpoints/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+.vscode/
+.idea/
+.git/
