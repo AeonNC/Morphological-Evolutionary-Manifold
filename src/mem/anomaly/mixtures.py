@@ -1,47 +1,45 @@
-import numpy as np
-import torch
+import pandas as pd
 from pathlib import Path
-from typing import List, Dict, Any, Tuple
-from ..utils.paths import paths
+from typing import List, Dict, Any
 
-class MixtureGenerator:
+class MixtureBuilder:
     """
-    Creates controlled rare-cell mixtures for MRD-inspired benchmarks.
+    Creates simulated MRD-style rare-cell mixtures for anomaly detection.
     """
-    def __init__(self, manifest_path: str):
-        import pandas as pd
+    def __init__(self, manifest_path: Path):
         self.df = pd.read_parquet(manifest_path)
 
-    def create_mixture(self,
-                       normal_dataset: str,
-                       abnormal_dataset: str,
-                       prevalence: float,
-                       bag_size: int = 1000,
-                       seed: int = 42) -> Dict[str, Any]:
+    def create_prevalence_suite(self, prevalences: List[float]) -> Dict[float, List[List[Dict]]]:
         """
-        Generates a synthetic bag of cells with a specific prevalence of abnormal cells.
+        Builds mixtures for multiple prevalence levels.
+        Each mixture is a 'bag' of cells.
         """
-        np.random.seed(seed)
+        suite = {}
+        for p in prevalences:
+            suite[p] = self._generate_mixture(p)
+        return suite
 
-        # 1. Filter sources
-        normals = self.df[self.df['dataset_name'] == normal_dataset]
-        abnormals = self.df[self.df['dataset_name'] == abnormal_dataset]
+    def _generate_mixture(self, prevalence: float) -> List[List[Dict]]:
+        """
+        Creates a set of mixture bags.
+        """
+        # 1. Separate Normal and Abnormal based on labels
+        normal_cells = self.df[self.df['disease_label'] == 'normal'].to_dict('records')
+        abnormal_cells = self.df[self.df['disease_label'] != 'normal'].to_dict('records')
 
-        # 2. Determine counts
-        n_abnormal = int(bag_size * prevalence)
-        n_normal = bag_size - n_abnormal
+        bags = []
+        for _ in range(10): # Generate 10 bags per level
+            bag_size = 1000
+            n_abnormal = int(bag_size * prevalence)
+            n_normal = bag_size - n_abnormal
 
-        # 3. Sample
-        norm_samples = normals.sample(n=min(len(normals), n_normal))
-        abnorm_samples = abnormals.sample(n=min(len(abnormals), n_abnormal))
+            # Sample without replacement
+            import random
+            selected_abnormal = random.sample(abnormal_cells, min(n_abnormal, len(abnormal_cells)))
+            selected_normal = random.sample(normal_cells, min(n_normal, len(normal_cells)))
 
-        # Combine
-        mixture_df = pd.concat([norm_samples, abnorm_samples])
+            bag = selected_abnormal + selected_normal
+            random.shuffle(bag)
+            bags.append(bag)
 
-        return {
-            "recipe_id": f"mix_{prevalence}_{seed}",
-            "prevalence": prevalence,
-            "bag_size": len(mixture_df),
-            "abnormal_count": len(abnorm_samples),
-            "records": mixture_df['record_id'].tolist()
-        }
+        return bags

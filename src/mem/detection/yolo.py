@@ -1,71 +1,48 @@
-from ultralytics import YOLO
-import pandas as pd
-from pathlib import Path
-from typing import Dict, Any, List, Optional
 import torch
-from ..utils.paths import paths
+from ultralytics import YOLO
+from pathlib import Path
+from typing import List, Dict, Any, Optional
+import numpy as np
+import pandas as pd
 
-class YOLODetector:
-    """Wrapper for Ultralytics YOLO to handle blood cell localization."""
+class MEMDetector:
+    """
+    Wrapper for Ultralytics YOLO for blood cell localization.
+    """
+    def __init__(self, model_path: Optional[str] = None, model_variant: str = "yolo11n.pt"):
+        self.model_variant = model_variant
+        if model_path:
+            self.model = YOLO(model_path)
+        else:
+            # Default to pretrained weights from ultralytics
+            self.model = YOLO(model_variant)
 
-    def __init__(self, config_path: str):
-        with open(config_path, 'r') as f:
-            import yaml
-            self.config = yaml.safe_load(f)
-
-        self.model_name = self.config.get('model_name', 'yolo11n.pt')
-        self.model = YOLO(self.model_name)
-
-    def train(self, data_yaml: str, output_dir: Optional[str] = None):
-        """Train the detector on the specified dataset."""
-        out_dir = output_dir or paths.get_output_path("runs/detect/train")
-
-        results = self.model.train(
-            data=data_yaml,
-            epochs=self.config.get('epochs', 100),
-            imgsz=self.config.get('img_size', 640),
-            batch=self.config.get('batch', -1),
-            optimizer=self.config.get('optimizer', 'AdamW'),
-            lr0=self.config.get('lr0', 0.001),
-            lrf=self.config.get('lrf', 0.01),
-            cos_lr=self.config.get('cos_lr', True),
-            warmup_epochs=self.config.get('warmup_epochs', 3),
-            patience=self.config.get('patience', 20),
-            seed=self.config.get('seed', 42),
-            augment=self.config.get('augment', True),
-            mosaic=self.config.get('mosaic', 0.5),
-            mixup=self.config.get('mixup', 0.0),
-            close_mosaic=self.config.get('close_mosaic', 10),
-            project=str(out_dir),
-            name="exp"
-        )
-        return results
-
-    def predict(self, image_path: str, conf_threshold: float = 0.25) -> List[Dict[str, Any]]:
+    def detect(self, image_path: Path, conf_threshold: float = 0.25) -> List[Dict[str, Any]]:
         """
-        Predict bounding boxes for a single image.
-        Returns a list of dicts: [{'class': int, 'box': [x1, y1, x2, y2], 'conf': float}]
+        Detects cells in an image and returns a list of bounding boxes.
         """
-        results = self.model.predict(source=image_path, conf=conf_threshold, verbose=False)
-        result = results[0]
+        results = self.model.predict(source=str(image_path), conf=conf_threshold, verbose=False)
 
         detections = []
-        boxes = result.boxes
-        for box in boxes:
-            detections.append({
-                'class': int(box.cls),
-                'box': box.xyxy[0].tolist(),
-                'conf': float(box.conf)
-            })
+        for r in results:
+            boxes = r.boxes
+            for box in boxes:
+                # Convert to xyxy format
+                xyxy = box.xyxy[0].cpu().numpy().tolist()
+                cls = int(box.cls[0])
+                conf = float(box.conf[0])
+
+                detections.append({
+                    "bbox": xyxy,
+                    "class": cls,
+                    "confidence": conf,
+                    "class_name": self.model.names[cls]
+                })
+
         return detections
 
-    def evaluate(self, data_yaml: str) -> Dict[str, float]:
-        """Run validation and return key metrics."""
-        metrics = self.model.val(data=data_yaml)
-        return {
-            "mAP50": metrics.box.map50,
-            "mAP50-95": metrics.box.map,
-            "precision": metrics.box.mp,
-            "recall": metrics.box.mr,
-            "f1": metrics.box.f1.mean()
-        }
+    def save_model(self, path: Path):
+        self.model.save(path)
+
+    def load_model(self, path: Path):
+        self.model = YOLO(path)

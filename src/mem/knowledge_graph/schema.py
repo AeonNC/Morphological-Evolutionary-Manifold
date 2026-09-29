@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field
 from typing import List, Optional, Dict, Any
 from enum import Enum
 
-class NodeRole(str, Enum):
+class NodeType(str, Enum):
     DISEASE = "disease"
     SUBTYPE = "subtype"
     GENETIC_ENTITY = "genetic_entity"
@@ -10,9 +10,9 @@ class NodeRole(str, Enum):
     MUTATION = "mutation"
     FUSION = "fusion"
     PATHWAY = "pathway"
-    MORPHOLOGY_ATTR = "morphology_attribute"
+    MORPHOLOGY_ATTRIBUTE = "morphology_attribute"
     MODEL_CLUSTER = "model_cluster"
-    TOPOLOGY_SIG = "topology_signature"
+    TOPOLOGY_SIGNATURE = "topology_signature"
     DATASET = "dataset"
     EVIDENCE_SOURCE = "evidence_source"
 
@@ -22,23 +22,22 @@ class EdgeType(str, Enum):
     INCLUDES = "includes"
     PARTICIPATES_IN = "participates_in"
     OBSERVED_IN = "observed_in"
-    HAS_TOPOLOGY = "has_topology"
-    HYPOTHESIS_LINKED = "hypothesis_linked_to"
-    CONTAINS = "contains"
-    SUPPORTED_BY = "supported_by"
+    HYPOTHESIS_LINK = "hypothesis_link"
+    SUPPORTS = "supports"
 
-class KGNode(BaseModel):
-    id: str
-    role: NodeRole
+class Node(BaseModel):
+    node_id: str
+    node_type: NodeType
     label: str
     properties: Dict[str, Any] = {}
 
-class KGEdge(BaseModel):
-    source: str
-    target: str
-    relation: EdgeType
-    evidence_level: str = "low"
-    source_url: Optional[str] = None
-    citation: Optional[str] = None
+class Edge(BaseModel):
+    source_id: str
+    target_id: str
+    edge_type: EdgeType
+    evidence_source: str
+    evidence_url: Optional[str] = None
+    confidence: float = 1.0
     is_patient_linked: bool = False
-    confidence: float = 0.5
+    citation: Optional[str] = None
+    notes: Optional[str] = None

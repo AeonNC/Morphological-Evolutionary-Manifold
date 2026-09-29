@@ -1,0 +1,41 @@
+[project]
+name = "mem"
+version = "0.1.0"
+description = "Morphological Evolutionary Manifold for Leukemia Research"
+dependencies = [
+    "torch>=2.0",
+    "torchvision",
+    "timm",
+    "transformers",
+    "datasets",
+    "numpy",
+    "pandas",
+    "scipy",
+    "scikit-learn",
+    "pydantic",
+    "pyyaml",
+    "typer",
+    "rich",
+    "tqdm",
+    "pytest",
+    "ruff",
+    "opencv-python",
+    "pillow",
+    "albumentations",
+    "scikit-image",
+    "ultralytics",
+    "imagehash",
+    "tensorboard",
+    "gudhi",
+    "umap-learn",
+    "hdbscan",
+    "networkx",
+    "matplotlib",
+    "seaborn",
+    "plotly",
+    "streamlit",
+]
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"

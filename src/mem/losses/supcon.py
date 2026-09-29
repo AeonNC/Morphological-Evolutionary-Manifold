@@ -5,50 +5,41 @@ import torch.nn.functional as F
 class SupConLoss(nn.Module):
     """
     Supervised Contrastive Loss (SupCon).
-    Based on: Khosla et al. (2020) 'Supervised Contrastive Learning'.
+    Encourages samples of the same class to be close and different classes to be far.
     """
     def __init__(self, temperature: float = 0.07):
         super().__init__()
         self.temperature = temperature
 
-    def forward(self, features: torch.Tensor, labels: torch.Tensor) -> torch.Tensor:
+    def forward(self, features: torch.Tensor, labels: torch.Tensor):
         """
-        Args:
-            features: (B, D) - normalized embeddings
-            labels: (B,) - class labels
+        features: [B, D]
+        labels: [B]
         """
-        device = features.device
-        batch_size = features.shape[0]
-
-        # Normalize features
+        # L2 Normalize features
         features = F.normalize(features, p=2, dim=1)
 
-        # Compute cosine similarity matrix
-        similarity_matrix = torch.matmul(features, features.T) # (B, B)
-
-        # Create mask for positive pairs (same label)
+        batch_size = features.shape[0]
         labels = labels.contiguous().view(-1, 1)
-        mask = torch.eq(labels, labels.T).float().to(device)
 
-        # Mask out self-similarities
-        logits_mask = torch.scatter(
-            torch.ones_like(mask),
-            1,
-            torch.arange(batch_size).view(-1, 1).to(device),
-            0
-        )
-        mask = mask * logits_mask
+        # Mask for positives (same class)
+        mask = torch.eq(labels, labels.T).float().to(features.device)
+        # Remove self-contrast
+        mask.fill_diagonal_(0)
 
-        # Compute logits
-        logits = similarity_matrix / self.temperature
+        # Compute cosine similarity
+        logits = torch.matmul(features, features.T) / self.temperature
 
         # For each positive pair, compute the contrastive loss
-        # exp(sim(i,j)/T) / sum(exp(sim(i,k)/T))
-        exp_logits = torch.exp(logits) * logits_mask
-        log_prob = logits - torch.log(exp_logits.sum(1, keepdim=True) + 1e-6)
+        exp_logits = torch.exp(logits)
 
-        # Mean log-prob over positives
-        mean_log_prob_pos = (mask * log_prob).sum(1) / (mask.sum(1) + 1e-6)
+        # Sum of exp(logits) for all negatives (and positives)
+        denom = exp_logits.sum(1, keepdim=True)
 
-        loss = -mean_log_prob_pos.mean()
+        # Masked contrastive loss
+        # log( exp(pos) / sum(exp(all)) )
+        pos_logits = (exp_logits * mask).sum(1, keepdim=True) / (mask.sum(1, keepdim=True) + 1e-6)
+
+        loss = -torch.log(pos_logits / denom).mean()
+
         return loss

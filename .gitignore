@@ -1,12 +1,24 @@
-# Data-heavy paths and large artifacts
-data/
-outputs/
-.ipynb_checkpoints/
+*
+!.gitignore
+!.pre-commit-config.yaml
+!pyproject.toml
+
+# Python
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
+*.py[cod]
+*$py.class
+
+# Data & Artifacts
+data/raw/
+data/interim/
+data/processed/
+data/external/
+data/quarantine/
+outputs/
 .env
+
+# IDE & OS
 .vscode/
 .idea/
-.git/
+.DS_Store
+Thumbs.db

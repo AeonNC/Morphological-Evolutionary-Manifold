@@ -1,4 +1,4 @@
-# Core Dependencies
+# MEM Requirements
 torch>=2.0
 torchvision
 timm
@@ -8,19 +8,21 @@ numpy
 pandas
 scipy
 scikit-learn
-pyyaml
 pydantic
+pyyaml
 typer
 rich
 tqdm
 pytest
+ruff
 opencv-python
+pillow
 albumentations
-ultralytics
 scikit-image
+ultralytics
 imagehash
+tensorboard
 gudhi
-giotto-tda
 umap-learn
 hdbscan
 networkx
@@ -28,5 +30,3 @@ matplotlib
 seaborn
 plotly
 streamlit
-pyarrow
-fastparquet

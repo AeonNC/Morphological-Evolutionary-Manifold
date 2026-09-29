@@ -1,40 +1,11 @@
+# MEM Environment
 name: mem-env
 channels:
   - pytorch
-  - nvidia
   - conda-forge
   - defaults
 dependencies:
   - python=3.10
-  - pytorch
-  - torchvision
-  - pytorch-cuda=11.8
-  - numpy
-  - pandas
-  - scipy
-  - scikit-learn
-  - pyyaml
-  - opencv
-  - matplotlib
-  - seaborn
-  - plotly
   - pip
   - pip:
-      - timm
-      - transformers
-      - datasets
-      - ultralytics
-      - albumentations
-      - gudhi
-      - giotto-tda
-      - umap-learn
-      - hdbscan
-      - networkx
-      - streamlit
-      - pyarrow
-      - fastparquet
-      - pydantic
-      - typer
-      - rich
-      - tqdm
-      - pytest
+    - -r requirements.txt
