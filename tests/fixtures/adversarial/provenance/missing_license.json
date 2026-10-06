@@ -1,0 +1,13 @@
+{
+  "dataset_name": "adversarial_missing_license",
+  "dataset_version": "0.0",
+  "official_source_url": "https://example.invalid/changed",
+  "source_verification_status": "approved",
+  "license": null,
+  "citation_requirement": "unknown",
+  "intended_MEM_use": "red-team only",
+  "prohibited_MEM_use": "any real experiment",
+  "approval_status": "approved",
+  "source_integrity_hash": "deadbeef",
+  "disclaimer": "Research Use Only. MEM is a computational research framework and is not validated for clinical diagnosis, treatment selection, molecular profiling, clonal lineage reconstruction, or minimal/measurable residual disease reporting."
+}

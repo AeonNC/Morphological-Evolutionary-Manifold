@@ -1,0 +1,22 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+        args: ["--maxkb=500"]
+      - id: detect-private-key
+  - repo: local
+    hooks:
+      - id: mem-claim-lint
+        name: MEM claim linter
+        entry: python -m mem.cli claim-lint --output-dir outputs
+        language: system
+        pass_filenames: false
+      - id: mem-secret-scan
+        name: MEM secret scan
+        entry: python -c "from pathlib import Path; from mem.security.secrets import scan_secrets; scan_secrets(Path('.'), Path('outputs'))"
+        language: system
+        pass_filenames: false

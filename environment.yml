@@ -1,11 +1,9 @@
-# MEM Environment
-name: mem-env
+name: mem
 channels:
-  - pytorch
   - conda-forge
   - defaults
 dependencies:
-  - python=3.10
+  - python=3.11
   - pip
   - pip:
-    - -r requirements.txt
+      - -r requirements-stage0.txt

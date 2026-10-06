@@ -1,0 +1,4 @@
+This file is a synthetic privacy fixture and must not contain real identifiers.
+patient_JohnDoe_mrn12345
+email  not_a_real_person@example.com
+phone  555-123-4567

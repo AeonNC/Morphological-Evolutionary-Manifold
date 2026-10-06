@@ -1,0 +1,19 @@
+project: MEM
+stage: 0
+accepted: false
+disclaimer: "Research Use Only. MEM is a computational research framework and is not validated for clinical diagnosis, treatment selection, molecular profiling, clonal lineage reconstruction, or minimal/measurable residual disease reporting."
+enabled_commands:
+  - setup-colab
+  - claim-lint
+  - privacy-scan
+  - validate-provenance
+  - run-redteam
+  - verify-g0
+  - verify-release
+blocked_until_stage1:
+  - acquire-data
+  - audit-data
+  - build-manifest
+  - find-duplicates
+  - split-data
+  - lock-split

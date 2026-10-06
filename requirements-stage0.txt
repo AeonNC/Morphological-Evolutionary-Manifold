@@ -1,0 +1,11 @@
+# Stage 0 runtime (CPU). Pins are ==. Hashed lockfiles are a G0 residual risk until make lock.
+numpy==2.2.3
+pandas==2.2.3
+pydantic==2.10.6
+pyyaml==6.0.2
+typer==0.15.2
+rich==13.9.4
+tqdm==4.67.1
+pillow==11.1.0
+pytest==8.3.5
+ruff==0.9.10

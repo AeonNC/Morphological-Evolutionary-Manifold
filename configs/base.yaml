@@ -1,0 +1,21 @@
+project: MEM
+version: 0.1.0-stage0
+mode: public_research_only
+fail_closed: true
+wandb_enabled: false
+clinical_mode: false
+upload_persistence: false
+disclaimer: "Research Use Only. MEM is a computational research framework and is not validated for clinical diagnosis, treatment selection, molecular profiling, clonal lineage reconstruction, or minimal/measurable residual disease reporting."
+seed: 42
+device: cpu
+paths:
+  data_raw: data/raw
+  quarantine: data/quarantine
+  manifests: data/manifests
+  outputs: outputs
+gates:
+  require_in_order: true
+  start_gate: G0
+colab:
+  persist_to_drive: false
+  warn_on_upload: "Do not upload patient-identifiable or clinical data."

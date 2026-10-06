@@ -1,24 +1,64 @@
-*
-!.gitignore
-!.pre-commit-config.yaml
-!pyproject.toml
-
-# Python
+# Byte-compiled
 __pycache__/
 *.py[cod]
 *$py.class
-
-# Data & Artifacts
-data/raw/
-data/interim/
-data/processed/
-data/external/
-data/quarantine/
-outputs/
+*.so
+.Python
+.venv/
+venv/
 .env
+.env.*
+!.env.example
 
-# IDE & OS
-.vscode/
-.idea/
+# Secrets and credentials
+*.pem
+*.key
+credentials.json
+secrets.yaml
+
+# Data (keep gitkeeps)
+data/raw/*
+!data/raw/_templates/
+!data/raw/_templates/**
+data/interim/*
+!data/interim/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+data/external/*
+!data/external/.gitkeep
+data/manifests/*
+!data/manifests/.gitkeep
+data/quarantine/*
+!data/quarantine/.gitkeep
+
+# Outputs except gitkeeps
+outputs/**
+!outputs/**/.gitkeep
+
+# Notebooks checkpoints
+.ipynb_checkpoints/
+
+# Models
+*.pt
+*.pth
+*.ckpt
+*.onnx
+*.pkl
+*.pickle
+*.h5
+
+# OS / IDE
 .DS_Store
 Thumbs.db
+.idea/
+.vscode/
+
+# Test / lint
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Colab
+drive/

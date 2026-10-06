@@ -1,0 +1,13 @@
+cff-version: 1.2.0
+title: "Morphological Evolutionary Manifold (MEM)"
+message: "If you use this software, please cite this repository and all required dataset papers."
+type: software
+version: 0.1.0-stage0
+date-released: "2026-10-06"
+abstract: >
+  Research Use Only. MEM is a computational research framework and is not
+  validated for clinical diagnosis, treatment selection, molecular profiling,
+  clonal lineage reconstruction, or minimal/measurable residual disease reporting.
+authors:
+  - name: "MEM project authors (to be completed; do not invent names)"
+license: MIT

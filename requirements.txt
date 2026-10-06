@@ -1,32 +1,25 @@
-# MEM Requirements
-torch>=2.0
-torchvision
-timm
-transformers
-datasets
-numpy
-pandas
-scipy
-scikit-learn
-pydantic
-pyyaml
-typer
-rich
-tqdm
-pytest
-ruff
-opencv-python
-pillow
-albumentations
-scikit-image
-ultralytics
-imagehash
-tensorboard
-gudhi
-umap-learn
-hdbscan
-networkx
-matplotlib
-seaborn
-plotly
-streamlit
+# Full scientific stack. Install only after Stage 0 acceptance and when the environment can compile/wheels.
+# These pins are starting versions for Stage 4+ and may need platform-specific adjustment.
+# Research Use Only. MEM is a computational research framework and is not validated for clinical diagnosis, treatment selection, molecular profiling, clonal lineage reconstruction, or minimal/measurable residual disease reporting.
+-r requirements-stage0.txt
+torch==2.6.0
+torchvision==0.21.0
+timm==1.0.15
+transformers==4.49.0
+datasets==3.3.2
+scipy==1.15.2
+scikit-learn==1.6.1
+opencv-python==4.11.0.86
+albumentations==2.0.5
+scikit-image==0.25.2
+ultralytics==8.3.78
+imagehash==4.3.2
+tensorboard==2.19.0
+gudhi==3.11.0
+umap-learn==0.5.7
+hdbscan==0.8.40
+networkx==3.4.2
+matplotlib==3.10.1
+seaborn==0.13.2
+plotly==6.0.0
+streamlit==1.43.2
